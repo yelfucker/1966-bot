@@ -27,6 +27,18 @@ async def on_ready():
     print(f"{bot.user} aktif - {len(bot.guilds)} sunucu")
     await bot.change_presence(activity=discord.Game("!yardım | 7/24 | 1966"))
 
+# SELAM KARŞILIĞI
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+
+    selamlar = ["sa", "selam", "selamun aleyküm", "selamünaleyküm", "sea", "selamün aleyküm"]
+    if any(message.content.lower().startswith(kelime) for kelime in selamlar):
+        await message.channel.send(f"Aleyküm selam {message.author.mention}")
+
+    await bot.process_commands(message)
+
 OTOROL_ID = None
 
 @bot.event
@@ -185,6 +197,24 @@ async def kaccm(ctx):
     embed.set_footer(text="Sonuçlar kesinlikle gerçekçidir.")
     await ctx.send(embed=embed)
 
+# SUNUCU BİLGİSİ
+@bot.command(name="sunucu")
+async def sunucu(ctx):
+    if not yetkili_mi(ctx):
+        await ctx.send("❌ Yetersiz yetki. Bu komutu kullanmak için `1 9 6 6` rolüne sahip olmalısın.")
+        return
+
+    guild = ctx.guild
+    embed = discord.Embed(title=f"📊 {guild.name} Sunucu Bilgisi", color=discord.Color.blue())
+    embed.add_field(name="👥 Üye Sayısı", value=guild.member_count)
+    embed.add_field(name="🚀 Boost Sayısı", value=guild.premium_subscription_count)
+    embed.add_field(name="📅 Kuruluş", value=guild.created_at.strftime("%d.%m.%Y"))
+    embed.add_field(name="👑 Sahip", value=guild.owner.mention)
+    embed.add_field(name="📢 Kanal Sayısı", value=len(guild.channels))
+    embed.add_field(name="🎭 Rol Sayısı", value=len(guild.roles))
+    embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+    await ctx.send(embed=embed)
+
 # YARDIM
 @bot.command(name="yardım")
 async def yardim(ctx):
@@ -203,6 +233,7 @@ async def yardim(ctx):
     embed.add_field(name="!rolal @kullanıcı @rol", value="Kullanıcıdan rol alır", inline=False)
     embed.add_field(name="!otorol @rol", value="Yeni katılanlara otomatik rol verir", inline=False)
     embed.add_field(name="!otorolkapat", value="Otorolü kapatır", inline=False)
+    embed.add_field(name="!sunucu", value="Sunucu bilgilerini gösterir", inline=False)
     embed.set_footer(text="Tüm komutlar için 1 9 6 6 rolü gerekir (kaçcm hariç)")
     await ctx.send(embed=embed)
 
