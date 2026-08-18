@@ -3,6 +3,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 import random
+import os
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
@@ -24,10 +25,9 @@ def ozel_kanal_mi(ctx):
 @bot.event
 async def on_ready():
     print(f"{bot.user} aktif - {len(bot.guilds)} sunucu")
-    await bot.change_presence(activity=discord.Game("!yardım Made by 1966"))
+    await bot.change_presence(activity=discord.Game("!yardım | 7/24 | 1966"))
 
-# OTO ROL
-OTOROL_ID = 1539306482057875507
+OTOROL_ID = None
 
 @bot.event
 async def on_member_join(member):
@@ -170,7 +170,7 @@ async def temizle(ctx, amount: int):
     await asyncio.sleep(3)
     await msg.delete()
 
-# KAÇ CM (ÖZEL KANAL + HERKES KULLANABİLİR)
+# KAÇ CM
 @bot.command(name="kaçcm")
 async def kaccm(ctx):
     if not ozel_kanal_mi(ctx):
@@ -230,4 +230,4 @@ async def on_command_error(ctx, error):
     else:
         await ctx.send(f"❌ Hata: {error}")
 
-bot.run("TOKENINI_BURAYA_YAZ")
+bot.run(os.getenv("TOKEN"))
